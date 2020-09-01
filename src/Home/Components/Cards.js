@@ -48,10 +48,6 @@ const Cards = () => {
   };
 
   const handleDelete = async (id) => {
-    // dispatch({
-    //   type: DELETE_ITEM,
-    //   payload: id,
-    // });
     try {
       await deleteItem(id, signal.token);
     } catch (error) {

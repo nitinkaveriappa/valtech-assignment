@@ -40,10 +40,6 @@ const Form = (props) => {
   };
 
   const handleButtonClick = async () => {
-    // dispatch({
-    //   type: isEdit ? UPDATE_ITEMS : ADD_ITEMS,
-    //   payload: item,
-    // });
     if (isEdit) {
       try {
         const response = await putItem(id, item, signal.token);

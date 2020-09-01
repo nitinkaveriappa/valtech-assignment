@@ -1,13 +1,6 @@
 import React, { createContext, useReducer } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import map from 'lodash/map';
-import filter from 'lodash/filter';
-import {
-  FETCH_ITEMS,
-  ADD_ITEMS,
-  UPDATE_ITEMS,
-  DELETE_ITEM,
-} from './ContextConstants';
+
+import { FETCH_ITEMS } from './ContextConstants';
 
 const initialState = {
   items: [],
@@ -21,32 +14,6 @@ const reducer = (state, action) => {
         ? {
             ...state,
             items: action.payload,
-          }
-        : state;
-    case ADD_ITEMS:
-      return action.payload
-        ? {
-            ...state,
-
-            items: [...state.items, { ...action.payload, id: uuidv4() }],
-          }
-        : state;
-    case UPDATE_ITEMS:
-      return action.payload
-        ? {
-            ...state,
-            items: map(state.items, (originalItem) =>
-              originalItem.id === action.payload.id
-                ? action.payload
-                : originalItem
-            ),
-          }
-        : state;
-    case DELETE_ITEM:
-      return action.payload
-        ? {
-            ...state,
-            items: filter(state.items, (item) => item.id !== action.payload),
           }
         : state;
     default:
