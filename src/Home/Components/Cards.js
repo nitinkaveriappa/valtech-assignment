@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import map from 'lodash/map';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,6 +12,9 @@ import {
   CardContent,
   CardActions,
   CardActionArea,
+  Popper,
+  Paper,
+  Fade,
 } from '@material-ui/core';
 
 import Buttons from './Buttons';
@@ -37,7 +40,8 @@ const Cards = ({ items }) => {
   const classes = useStyles();
   let history = useHistory();
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  // const [anchorEl, setAnchorEl] = useState(null);
+  const [showButton, setShowButton] = useState({});
   const [itemsState, dispatch] = useContext(ItemsContext);
 
   const handleEdit = (id) => {
@@ -51,38 +55,49 @@ const Cards = ({ items }) => {
     });
   };
 
-  const handlePopoverOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  // const handlePopoverOpen = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+
+  // const handlePopoverClose = () => {
+  //   setAnchorEl(null);
+  // };
+
+  const handlePopoverOpen = (event, id) => {
+    console.log(event, id);
+    setShowButton((prevState) => ({ ...prevState, [id]: true }));
   };
 
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
+  const handlePopoverClose = (event, id) => {
+    console.log(event, id);
+    setShowButton((prevState) => ({ ...prevState, [id]: false }));
   };
 
-  const handlePopover = (event) => {
-    console.log(event);
-    setAnchorEl((prevState) => (prevState ? null : event.currentTarget));
-  };
+  // const handlePopover = (event) => {
+  //   console.log(event);
+  //   setAnchorEl((prevState) => (prevState ? null : event.currentTarget));
+  // };
 
-  const open = Boolean(anchorEl);
-  console.log({ anchorEl });
+  // if (anchorEl) {
+  //   console.log({ anchorEl }, anchorEl.clientHeight, anchorEl.clientWidth);
+  // }
 
   return (
     <>
       {itemsState.items.length > 0 &&
         map(itemsState.items, (item) => (
-          <Grid item xs={12} md={4} key={item.id} onClick={handlePopover}>
-            <Card
-              className={classes.card}
-              // onMouseEnter={handlePopoverOpen}
-              // onMouseLeave={handlePopoverClose}
-            >
+          <Grid item xs={12} md={4} key={item.id}>
+            <Card className={classes.card}>
               <CardMedia
                 className={classes.cardMedia}
                 image={item.imgURL}
                 title={item.imgTitle}
               />
-              <CardActionArea>
+              <CardActionArea
+                // onClick={handlePopover}
+                onMouseEnter={(e) => handlePopoverOpen(e, item.id)}
+                onMouseLeave={(e) => handlePopoverClose(e, item.id)}
+              >
                 <div className={classes.cardDetails}>
                   <CardContent>
                     <Typography variant="h5">{item.title}</Typography>
@@ -102,25 +117,19 @@ const Cards = ({ items }) => {
                     </Tooltip>
                   </CardContent>
                 </div>
-                <CardActions>
-                  <Buttons
-                    item={item}
-                    handleEdit={handleEdit}
-                    handleDelete={handleDelete}
-                  />
-                </CardActions>
+                <Fade in={showButton[item.id]}>
+                  <CardActions>
+                    <Buttons
+                      item={item}
+                      handleEdit={handleEdit}
+                      handleDelete={handleDelete}
+                    />
+                  </CardActions>
+                </Fade>
               </CardActionArea>
             </Card>
-            {/* {open && (
+            {/* {Boolean(anchorEl) && (
               <Popover
-                // className={classes.popover}
-                // classes={{
-                //   paper: classes.paper,
-                // }}
-                width={anchorEl.clientWidth}
-                height={anchorEl.clientHeight}
-                open={open}
-                anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: 'top',
                   horizontal: 'left',
@@ -129,10 +138,28 @@ const Cards = ({ items }) => {
                   vertical: 'top',
                   horizontal: 'left',
                 }}
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
                 onClose={handlePopoverClose}
-                disableRestoreFocus
               >
-                <Buttons client={anchorEl} />
+                <Grid
+                  style={{
+                    opacity: '0.1',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignIitems: 'center',
+                    backgroundColor: 'transparent',
+                    background: 'transparent',
+                    width: anchorEl.clientWidth,
+                    height: anchorEl.clientHeight,
+                  }}
+                >
+                  <Buttons
+                    item={item}
+                    handleEdit={handleEdit}
+                    handleDelete={handleDelete}
+                  />
+                </Grid>
               </Popover>
             )} */}
           </Grid>
