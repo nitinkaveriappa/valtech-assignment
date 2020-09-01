@@ -17,6 +17,9 @@ const Home = () => {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Typography variant="h5">Trending Projects</Typography>
+          <Typography variant="subtitle2">
+            Most Sought-after Projects in Bengaluru
+          </Typography>
         </Grid>
         <Grid item xs={6} align="right">
           <Button
