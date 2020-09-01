@@ -104,7 +104,7 @@ const Cards = ({ items }) => {
                     <Typography variant="subtitle1" color="textSecondary">
                       {item.location}
                     </Typography>
-                    <Tooltip title={item.desc} placement="bottom">
+                    <Tooltip title={item.desc} placement="right">
                       <Typography
                         variant="body1"
                         // noWrap
