@@ -1,14 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
 import find from 'lodash/find';
-import map from 'lodash/map';
 import { Grid, TextField, Button, Typography } from '@material-ui/core';
 
 import { ItemsContext } from '../../ContextProvider/ItemsContext';
-import {
-  UPDATE_ITEMS,
-  ADD_ITEMS,
-} from '../../ContextProvider/ContextConstants';
 import {
   DEVELOPER_LOGO_IMAGE_URL,
   DEVELOPER_NAME,
@@ -19,10 +15,12 @@ import {
   PROJECT_LOCATION,
   PROJECT_IMAGE_URL,
 } from './FormConstants';
+import { putItem, postItem } from '../../Service';
 
 const Form = (props) => {
   const { id } = useParams();
   let history = useHistory();
+  const signal = axios.CancelToken.source();
 
   const [itemsState, dispatch] = useContext(ItemsContext);
   const [item, setItem] = useState({});
@@ -36,19 +34,29 @@ const Form = (props) => {
     }
   }, [id, itemsState]);
 
-  console.log({ id, item });
-
   const handleChange = (event) => {
     const { name, value } = event.target;
-    console.log(name, value);
     setItem({ ...item, [name]: value });
   };
 
-  const handleButtonClick = () => {
-    dispatch({
-      type: isEdit ? UPDATE_ITEMS : ADD_ITEMS,
-      payload: item,
-    });
+  const handleButtonClick = async () => {
+    // dispatch({
+    //   type: isEdit ? UPDATE_ITEMS : ADD_ITEMS,
+    //   payload: item,
+    // });
+    if (isEdit) {
+      try {
+        const response = await putItem(id, item, signal.token);
+      } catch (error) {
+        console.log('API Error', error);
+      }
+    } else {
+      try {
+        const response = await postItem(item, signal.token);
+      } catch (error) {
+        console.log('API Error', error);
+      }
+    }
     history.push(`/home`);
   };
 
@@ -205,7 +213,7 @@ const Form = (props) => {
                 onClick={handleButtonClick}
                 fullWidth
               >
-                {setIsEdit ? `Update` : `Add`}
+                {isEdit ? `Update` : `Add`}
               </Button>
             </Grid>
           </Grid>
